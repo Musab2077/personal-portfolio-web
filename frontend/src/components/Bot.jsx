@@ -8,16 +8,14 @@ const Bot = () => {
     const lsItem = localStorage.getItem("botChat");
     return lsItem ? Boolean(lsItem) : "";
   });
-
-  // Fixed initial state structure
+  const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([
     { sender: "bot", text: "Hi! How can I help you" },
   ]);
 
   const [userMessage, setUserMessage] = useState("");
   const isButtonDisabled = userMessage.trim() === "";
-  const backendURL =
-    "https://backend-for-portfolio-web.vercel.app";
+  const backendURL = "https://backend-for-portfolio-web.vercel.app";
   const messagesEndRef = useRef(null);
 
   const textareaRef = useRef(null);
@@ -44,6 +42,7 @@ const Bot = () => {
     if (!userMessage.trim()) return;
     setMessages((prev) => [...prev, { sender: "user", text: userMessage }]);
     setUserMessage("");
+    setLoading(true);
 
     fetch(`${backendURL}/bot_response`, {
       method: "POST",
@@ -61,6 +60,7 @@ const Bot = () => {
       .then((response) => {
         setMessages((prev) => [...prev, { sender: "bot", text: response }]);
       })
+      .finally(() => setLoading(false))
       .catch((error) => {
         console.error("Error:", error);
       });
@@ -69,13 +69,13 @@ const Bot = () => {
   return (
     <div
       className={`fixed right-3 bottom-3 ${
-        botChat ? "w-auto" : "sm:w-1/3 h-3/4 w-3/4 xl:w-1/4"
+        !botChat ? "w-auto" : "sm:w-1/3 h-3/4 w-3/4 xl:w-1/4"
       }`}
     >
-      {botChat ? (
+      {!botChat ? (
         <button
           className="bg-[#27AE60] p-2 hover:size-14 hover:bg-green-700 rounded-full place-items-center"
-          onClick={() => setBotChat("")}
+          onClick={() => setBotChat(true)}
         >
           <PiChatCircleDotsLight className="size-9" />
         </button>
@@ -85,7 +85,7 @@ const Bot = () => {
             <div className="flex justify-end p-2 border-b-2 border-b-neutral-600">
               <button
                 className="px-2 py-1 text-black bg-[#27AE60] hover:bg-green-700 rounded-lg"
-                onClick={() => setBotChat(true)}
+                onClick={() => setBotChat("")}
               >
                 <MdOutlineKeyboardArrowDown className="size-7" />
               </button>
@@ -95,15 +95,41 @@ const Bot = () => {
               {messages.map((msg, index) => (
                 <div key={index} className="space-y-2 mb-3">
                   {msg.sender === "bot" ? (
-                    <div className="bg-[#48904b] w-2/3 p-2 rounded-r-lg rounded-bl-lg">
-                      <p>{msg.text}</p>
-                    </div>
-                  ) : (
-                    <div className="flex justify-end">
-                      <div className="bg-[#4c8124] p-2 rounded-l-lg rounded-br-lg w-2/3">
+                    <>
+                      <div className="bg-[#48904b] w-2/3 p-2 rounded-r-lg rounded-bl-lg">
                         <p>{msg.text}</p>
                       </div>
-                    </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="flex justify-end">
+                        <div className="bg-[#4c8124] p-2 rounded-l-lg rounded-br-lg w-2/3">
+                          <p>{msg.text}</p>
+                        </div>
+                      </div>
+                      {loading && (
+                        <div className="bg-[#48904b] w-20 p-2 rounded-r-lg rounded-bl-lg">
+                          <div className="flex justify-start">
+                            <div className="text-white p-2 rounded-r-xl pt-2 pb-3 rounded-b-xl">
+                              <div className="flex space-x-2">
+                                <div
+                                  className="h-2 w-2 bg-black rounded-full animate-bounce"
+                                  style={{ animationDelay: "0ms" }}
+                                ></div>
+                                <div
+                                  className="h-2 w-2 bg-black rounded-full animate-bounce"
+                                  style={{ animationDelay: "150ms" }}
+                                ></div>
+                                <div
+                                  className="h-2 w-2 bg-black rounded-full animate-bounce"
+                                  style={{ animationDelay: "300ms" }}
+                                ></div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
               ))}
