@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { TbAlignRight } from "react-icons/tb";
 
 const NavBar = ({ children }) => {
-  const handleSideButton = () => {
-    console.log("hello");
-  };
+  // const handleSideButton = () => {
+  //   console.log("hello");
+  // };
 
   return (
     <div className="fixed right-0 left-0 p-5 border-b-2 z-50 backdrop-blur-xl border-b-neutral-700 shadow-[0_0_20px_3px_#000000] bg-neutral-800/65">

@@ -16,12 +16,12 @@ const Bot = () => {
 
   const [userMessage, setUserMessage] = useState("");
   const isButtonDisabled = userMessage.trim() === "";
-  const backendURL = "http://127.0.0.1:8000";
+  const backendURL =
+    "https://backend-3eoara9vc-musabs-projects-c45bba15.vercel.app";
   const messagesEndRef = useRef(null);
 
   const textareaRef = useRef(null);
 
-  // Auto-scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
