@@ -17,7 +17,7 @@ const Bot = () => {
   const [userMessage, setUserMessage] = useState("");
   const isButtonDisabled = userMessage.trim() === "";
   const backendURL =
-    "https://backend-3eoara9vc-musabs-projects-c45bba15.vercel.app";
+    "https://backend-for-portfolio-web.vercel.app";
   const messagesEndRef = useRef(null);
 
   const textareaRef = useRef(null);
