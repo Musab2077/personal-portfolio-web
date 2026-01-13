@@ -10,6 +10,8 @@ import "./App.css";
 import Contact from "./components/Contact";
 import Bot from "./components/Bot";
 import PersonalInfo from "./components/PersonalInfo";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 function App() {
   const [smallDevices, setSmallDevices] = useState(window.innerWidth > 845);
@@ -45,6 +47,10 @@ function App() {
     setSideButton(!sideButtons);
   }
 
+  useEffect(() => {
+    AOS.init({ duration: 1000 });
+  }, []);
+
   return (
     <>
       {sideButtons && (
@@ -62,7 +68,7 @@ function App() {
         />
       )}
       <div
-        className={`bg-neutral-800 overflow-x-hidden text-white md:px-12 px-6 relative z-0  pb-12 ${
+        className={`bg-black/90 overflow-x-hidden text-white md:px-12 px-6 relative z-0  pb-12 ${
           sideButtons && "opacity-80"
         }`}
         onClick={() => {
@@ -82,7 +88,9 @@ function App() {
             <MobileIcon onClick={() => handleSideButton()} />
           )}
         </NavBar>
-        <Description learnMoreClick={scrollToAbout} />
+        <div>
+          <Description learnMoreClick={scrollToAbout} />
+        </div>
         <div ref={aboutRef}>
           <About />
         </div>

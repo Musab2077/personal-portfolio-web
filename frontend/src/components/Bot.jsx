@@ -103,7 +103,7 @@ const Bot = () => {
                   ) : (
                     <>
                       <div className="flex justify-end">
-                        <div className="bg-[#4c8124] p-2 rounded-l-lg rounded-br-lg w-2/3">
+                        <div className="bg-[#4c8124] p-2 rounded-l-lg rounded-br-lg max-w-[66.67%] min-w-3">
                           <p>{msg.text}</p>
                         </div>
                       </div>
