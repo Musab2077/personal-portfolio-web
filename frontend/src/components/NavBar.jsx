@@ -4,8 +4,8 @@ import myImg from "./images/img 5.jpeg";
 
 const NavBar = ({ children, getInTouch }) => {
   return (
-    <div className="fixed right-0 left-0 p-5 z-50 backdrop-blur-sm bg-neutral-800/65">
-      <div className="flex flex-row justify-between">
+    <div className="fixed right-0 left-0 p-5 z-50 backdrop-blur-sm">
+      <div className="flex flex-row justify-evenly">
         <div className="flex space-x-2">
           <img className="rounded-md h-10 w-10" src={myImg} alt="description" />
           <h3 className="text-2xl">Musab</h3>
