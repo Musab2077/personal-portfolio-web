@@ -4,12 +4,12 @@ import { FaLinkedin } from "react-icons/fa6";
 import { FaSquareUpwork } from "react-icons/fa6";
 import { FaGithub } from "react-icons/fa";
 
-const SideBar = ({ onClick, aboutClick, servicesClick, contactClick }) => {
+const SideBar = ({ onClick, aboutClick, servicesClick }) => {
   const navArray = ["About", "Services", "Contact"];
 
   return (
     <div className="place-items-end fixed right-0 top-0 z-10 animate-slide-in-right">
-      <div className="py-3 text-white w-52 max-h-full min-h-screen bg-neutral-900">
+      <div className="py-3 text-white w-52 max-h-full min-h-screen bg-black/90 backdrop-blur-sm border-l border-l-neutral-700">
         <div className="m-3 text-right">
           <button
             className="hover:bg-neutral-700 p-1 rounded-md"
@@ -30,10 +30,7 @@ const SideBar = ({ onClick, aboutClick, servicesClick, contactClick }) => {
         >
           <button className="hover:underline">{navArray[1]}</button>
         </ul>
-        <ul
-          className="border-y-neutral-700 border-x-0 border cursor-pointer p-3 hover:bg-neutral-700"
-          onClick={contactClick}
-        >
+        <ul className="border-y-neutral-700 border-x-0 border cursor-pointer p-3 hover:bg-neutral-700">
           <button className="hover:underline">{navArray[2]}</button>
         </ul>
         <div className="flex justify-around mt-3 text-xl text-[#27AE60]">

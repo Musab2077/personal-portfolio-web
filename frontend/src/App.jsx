@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import NavBar from "./components/NavBar";
+import NavBarConfig from "./components/NavBarConfig";
 import { DesktopIcon, MobileIcon } from "./components/NavBar";
 import Description from "./components/Description";
 import SideBar from "./components/SideBar";
@@ -12,40 +12,15 @@ import Bot from "./components/Bot";
 import PersonalInfo from "./components/PersonalInfo";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { handleSideButton, scrollToComponent } from "./components/scrollFunc";
+import { useNavigate } from "react-router-dom";
 
 function App() {
-  const [smallDevices, setSmallDevices] = useState(window.innerWidth > 845);
   const [sideButtons, setSideButton] = useState(false);
   const aboutRef = useRef();
   const servicesRef = useRef();
-  const contactRef = useRef();
 
-  const scrollToAbout = () => {
-    aboutRef.current?.scrollIntoView({ behavior: "smooth" });
-    setSideButton(false);
-  };
-
-  const scrollToServices = () => {
-    servicesRef.current?.scrollIntoView({ behavior: "smooth" });
-    setSideButton(false);
-  };
-
-  const scrollToContact = () => {
-    contactRef.current?.scrollIntoView({ behavior: "smooth" });
-    setSideButton(false);
-  };
-
-  useEffect(() => {
-    const handleResize = () => {
-      setSmallDevices(window.innerWidth > 845);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  function handleSideButton() {
-    setSideButton(!sideButtons);
-  }
+  const navigate = useNavigate();
 
   useEffect(() => {
     AOS.init({ duration: 1000 });
@@ -61,14 +36,13 @@ function App() {
       )}
       {sideButtons && (
         <SideBar
-          aboutClick={scrollToAbout}
-          servicesClick={scrollToServices}
-          contactClick={scrollToContact}
-          onClick={() => handleSideButton()}
+          aboutClick={() => scrollToComponent(aboutRef, setSideButton)}
+          servicesClick={() => scrollToComponent(servicesRef, setSideButton)}
+          onClick={() => handleSideButton(setSideButton, sideButtons)}
         />
       )}
       <div
-        className={`bg-black/90 overflow-x-hidden text-white md:px-12 px-6 relative z-0  pb-12 ${
+        className={`bg-black/90 overflow-x-hidden text-white md:px-12 relative z-0  pb-12 ${
           sideButtons && "opacity-80"
         }`}
         onClick={() => {
@@ -77,19 +51,13 @@ function App() {
           }
         }}
       >
-        <NavBar>
-          {smallDevices ? (
-            <DesktopIcon
-              aboutClick={scrollToAbout}
-              servicesClick={scrollToServices}
-              contactClick={scrollToContact}
-            />
-          ) : (
-            <MobileIcon onClick={() => handleSideButton()} />
-          )}
-        </NavBar>
+        <NavBarConfig
+          scrollToAbout={() => scrollToComponent(aboutRef, setSideButton)}
+          scrollToServices={() => scrollToComponent(servicesRef, setSideButton)}
+          handleSideButton={() => handleSideButton(setSideButton, sideButtons)}
+        />
         <div>
-          <Description learnMoreClick={scrollToAbout} />
+          <Description learnMoreClick={scrollToComponent} />
         </div>
         <div ref={aboutRef}>
           <About />
@@ -99,9 +67,6 @@ function App() {
           <Services />
         </section>
         <Skills />
-        <section id="contact" ref={contactRef}>
-          <Contact />
-        </section>
         <Bot />
       </div>
     </>
