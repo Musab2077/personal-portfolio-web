@@ -4,6 +4,7 @@ import { SiMlflow } from "react-icons/si";
 import { LuBrainCircuit } from "react-icons/lu";
 import { VscRobot } from "react-icons/vsc";
 import BoxWithService from "./BoxWithService";
+import CommonHeader from "./CommonHeader";
 
 const Services = () => {
   const iconDesigning = "text-[#27AE60] mb-1";
@@ -26,7 +27,7 @@ const Services = () => {
 
   return (
     <div className="my-20">
-      <h3 className="text-4xl text-center">What I do</h3>
+      <CommonHeader title={"Services"} question={"What I do"} />
       <div className="lg:flex-row sm:grid xl:grid-cols-4 sm:grid-cols-2 flex-col justify-between place-items-center mt-16">
         <BoxWithService
           icon={iconArray[0]}
@@ -40,7 +41,7 @@ const Services = () => {
           heading2={heading2Array[1]}
           detail={boxDetailArray[1]}
         />
-        <div className="lg:mt-10 xl:mt-0">
+        <div className="sm:mt-10 xl:mt-0">
           <BoxWithService
             icon={iconArray[2]}
             heading1={heading1Array[2]}
@@ -48,7 +49,7 @@ const Services = () => {
             detail={boxDetailArray[2]}
           />
         </div>
-        <div className="lg:mt-10 xl:mt-0">
+        <div className="sm:mt-10 xl:mt-0">
           <BoxWithService
             icon={iconArray[3]}
             heading1={heading1Array[3]}

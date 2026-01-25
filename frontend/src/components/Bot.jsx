@@ -3,11 +3,7 @@ import { PiChatCircleDotsLight } from "react-icons/pi";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { RiSendPlaneFill } from "react-icons/ri";
 
-const Bot = () => {
-  const [botChat, setBotChat] = useState(() => {
-    const lsItem = localStorage.getItem("botChat");
-    return lsItem ? Boolean(lsItem) : "";
-  });
+const Bot = ({ onClick, botChat }) => {
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([
     { sender: "bot", text: "Hi! How can I help you" },
@@ -29,7 +25,7 @@ const Bot = () => {
       textareaRef.current.style.height = "auto";
       textareaRef.current.style.height = `${Math.min(
         textareaRef.current.scrollHeight,
-        200
+        200,
       )}px`;
     }
   }, [userMessage]);
@@ -68,24 +64,24 @@ const Bot = () => {
 
   return (
     <div
-      className={`fixed right-3 bottom-3 ${
+      className={`fixed text-white right-3 bottom-3 ${
         !botChat ? "w-auto" : "sm:w-1/3 h-3/4 w-3/4 xl:w-1/4"
       }`}
     >
       {!botChat ? (
         <button
           className="bg-[#27AE60] p-2 hover:size-14 hover:bg-green-700 rounded-full place-items-center"
-          onClick={() => setBotChat(true)}
+          onClick={onClick}
         >
           <PiChatCircleDotsLight className="size-9" />
         </button>
       ) : (
         <>
-          <div className="bg-neutral-900 h-full flex flex-col">
+          <div className="animate-slideUp bg-neutral-900 h-full flex flex-col">
             <div className="flex justify-end p-2 border-b-2 border-b-neutral-600">
               <button
                 className="px-2 py-1 text-black bg-[#27AE60] hover:bg-green-700 rounded-lg"
-                onClick={() => setBotChat("")}
+                onClick={onClick}
               >
                 <MdOutlineKeyboardArrowDown className="size-7" />
               </button>

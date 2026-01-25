@@ -14,16 +14,36 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import { handleSideButton, scrollToComponent } from "./components/scrollFunc";
 import { useNavigate } from "react-router-dom";
+import Footer from "./components/Footer";
+import Faqs from "./components/Faqs";
+import Testimonials from "./components/Testimonials";
 
 function App() {
   const [sideButtons, setSideButton] = useState(false);
-  const aboutRef = useRef();
-  const servicesRef = useRef();
+  const backendURL = "https://backend-for-portfolio-web.vercel.app";
+  const [botChat, setBotChat] = useState();
 
   const navigate = useNavigate();
 
   useEffect(() => {
     AOS.init({ duration: 1000 });
+  }, []);
+
+  useEffect(() => {
+    fetch(`${backendURL}/`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(() => {
+        console.log("Backend is running");
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        navigate("/error");
+      });
   }, []);
 
   return (
@@ -35,14 +55,10 @@ function App() {
         ></div>
       )}
       {sideButtons && (
-        <SideBar
-          aboutClick={() => scrollToComponent(aboutRef, setSideButton)}
-          servicesClick={() => scrollToComponent(servicesRef, setSideButton)}
-          onClick={() => handleSideButton(setSideButton, sideButtons)}
-        />
+        <SideBar onClick={() => handleSideButton(setSideButton, sideButtons)} />
       )}
       <div
-        className={`bg-black/90 overflow-x-hidden text-white md:px-12 relative z-0  pb-12 ${
+        className={`bg-black/95 overflow-x-hidden text-white relative z-0  pb-12 ${
           sideButtons && "opacity-80"
         }`}
         onClick={() => {
@@ -52,23 +68,37 @@ function App() {
         }}
       >
         <NavBarConfig
-          scrollToAbout={() => scrollToComponent(aboutRef, setSideButton)}
-          scrollToServices={() => scrollToComponent(servicesRef, setSideButton)}
           handleSideButton={() => handleSideButton(setSideButton, sideButtons)}
         />
-        <div>
-          <Description learnMoreClick={scrollToComponent} />
+        <div className="md:px-12">
+          <section id="about">
+            <Description
+              learnMoreButton={
+                <button
+                  className="bg-white rounded-lg p-1 px-2 sm:p-1 sm:px-4 transition-colors duration-700 hover:bg-neutral-400"
+                  onClick={() => setBotChat(true)}
+                >
+                  Learn More
+                </button>
+              }
+            />
+          </section>
+          <section id="services">
+            <Services />
+          </section>
         </div>
-        <div ref={aboutRef}>
-          <About />
-        </div>
-        <PersonalInfo />
-        <section ref={servicesRef}>
-          <Services />
+        <section id="testimonials">
+          <Testimonials />
         </section>
-        <Skills />
-        <Bot />
+        <section id="faqs">
+          <Faqs />
+        </section>
+        <Footer />
       </div>
+      <Bot
+        onClick={() => setBotChat(!botChat)}
+        botChat={botChat}
+      />
     </>
   );
 }

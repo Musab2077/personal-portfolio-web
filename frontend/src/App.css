@@ -16,3 +16,8 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #15803d;
 }
+
+
+html {
+  scroll-behavior: smooth;
+}

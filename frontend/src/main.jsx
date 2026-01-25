@@ -12,6 +12,7 @@ createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       {/* <App /> */}
       <Routes element={<NavBarConfig />}>
+      <Route path='*' element={<App />} />
         <Route path="/" element={<App />} />
         <Route path="/contact" element={<Contact />} />
       </Routes>

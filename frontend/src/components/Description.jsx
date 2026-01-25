@@ -1,6 +1,6 @@
 import React from "react";
 
-const Description = ({ learnMoreClick }) => {
+const Description = ({ learnMoreButton }) => {
   return (
     <>
       <div className="px-3 relative w-full h-full overflow-hidden pb-5">
@@ -72,12 +72,7 @@ const Description = ({ learnMoreClick }) => {
                     Preview Resume
                   </button>
                 </a>
-                <button
-                  className="bg-white rounded-lg p-1 px-2 sm:p-1 sm:px-4 transition-colors duration-700 hover:bg-neutral-400"
-                  onClick={learnMoreClick}
-                >
-                  Learn More
-                </button>
+                {learnMoreButton}
               </div>
             </div>
           </div>

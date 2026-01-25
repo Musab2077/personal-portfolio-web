@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NavBar, { DesktopIcon, MobileIcon } from "./NavBar";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 const NavBarConfig = ({
   scrollToAbout,
@@ -16,6 +18,15 @@ const NavBarConfig = ({
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    AOS.init({
+      duration: 1000,
+      easing: "ease-out-cubic",
+      once: true,
+      offset: 100,
+    });
   }, []);
 
   return (

@@ -3,9 +3,11 @@ import { RxCross2 } from "react-icons/rx";
 import { FaLinkedin } from "react-icons/fa6";
 import { FaSquareUpwork } from "react-icons/fa6";
 import { FaGithub } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const SideBar = ({ onClick, aboutClick, servicesClick }) => {
   const navArray = ["About", "Services", "Contact"];
+  const navigate = useNavigate();
 
   return (
     <div className="place-items-end fixed right-0 top-0 z-10 animate-slide-in-right">
@@ -22,16 +24,22 @@ const SideBar = ({ onClick, aboutClick, servicesClick }) => {
           className="border-y-neutral-700 border-x-0 border cursor-pointer p-3 hover:bg-neutral-700"
           onClick={aboutClick}
         >
-          <button className="hover:underline">{navArray[0]}</button>
+          <button className="hover:underline">
+            <a href="#about">{navArray[0]}</a>
+          </button>
         </ul>
         <ul
           className="border-y-neutral-700 border-x-0 border cursor-pointer p-3 hover:bg-neutral-700"
           onClick={servicesClick}
         >
-          <button className="hover:underline">{navArray[1]}</button>
+          <button className="hover:underline">
+            <a href="#services">{navArray[1]}</a>
+          </button>
         </ul>
-        <ul className="border-y-neutral-700 border-x-0 border cursor-pointer p-3 hover:bg-neutral-700">
-          <button className="hover:underline">{navArray[2]}</button>
+        <ul className="border-y-neutral-700 border-x-0 border cursor-pointer p-3 hover:bg-neutral-700" onClick={()=> navigate("/contact")}>
+          <button className="hover:underline">
+            <a href="/contact">{navArray[2]}</a>
+          </button>
         </ul>
         <div className="flex justify-around mt-3 text-xl text-[#27AE60]">
           <ul className="hover:text-green-700 hover:scale-110">

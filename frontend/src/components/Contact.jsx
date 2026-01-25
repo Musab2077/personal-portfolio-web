@@ -1,31 +1,24 @@
 import React, { useRef, useState } from "react";
 import { AiTwotoneMail } from "react-icons/ai";
-import { BsYoutube } from "react-icons/bs";
-import { FaInstagram, FaLinkedinIn } from "react-icons/fa6";
-import NavBar from "./NavBar";
 import NavBarConfig from "./NavBarConfig";
 import { handleSideButton, scrollToComponent } from "./scrollFunc";
 import { useNavigate } from "react-router-dom";
 import { LuAsterisk } from "react-icons/lu";
-
-// import { Mail, Linkedin, Instagram, Youtube } from "lucide-react";
+import Footer from "./Footer";
+import SideBar from "./SideBar";
 
 export default function ContactForm() {
   const [sideButtons, setSideButton] = useState(false);
+  const [emailValidation, setEmailValidation] = useState(true);
   const aboutRef = useRef();
   const servicesRef = useRef();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    message: "",
+    Name: "",
+    Email: "",
+    Message: "",
+    Date: "",
   });
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Form submitted:", formData);
-    alert("Message sent! (This is a demo)");
-  };
 
   const handleChange = (e) => {
     setFormData({
@@ -34,16 +27,65 @@ export default function ContactForm() {
     });
   };
 
+  function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const form = new FormData();
+    form.append("Name", formData.Name);
+    form.append("Email", formData.Email);
+    form.append("Message", formData.Message);
+    form.append("Date", new Date().toISOString());
+
+    try {
+      if (!isValidEmail(formData.Email)) {
+        setEmailValidation(false);
+        return;
+      }
+      setEmailValidation(true);
+      await fetch(
+        "https://api.sheetbest.com/sheets/9c1115c1-d415-4c4c-9446-95149dc48c2a",
+        {
+          method: "POST",
+          body: form, // ✅ NO headers
+        },
+      );
+
+      // alert("Message sent!");
+      setFormData({ Name: "", Email: "", Message: "", Date: "" });
+    } catch (err) {
+      console.error(err);
+      alert("Failed");
+    }
+  };
+
   return (
     <>
-      <div className="bg-black/95">
+      {sideButtons && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-60 z-10"
+          onClick={() => setSideButton(false)}
+        ></div>
+      )}
+      {sideButtons && (
+        <SideBar onClick={() => handleSideButton(setSideButton, sideButtons)} />
+      )}
+      <div
+        className={`bg-black/95 overflow-x-hidden text-white relative z-0  pb-12 ${
+          sideButtons && "opacity-80"
+        }`}
+        onClick={() => {
+          if (sideButtons) {
+            setSideButton(false);
+          }
+        }}
+      >
         <NavBarConfig
-          scrollToAbout={() =>
-            scrollToComponent(aboutRef, setSideButton, true, navigate)
-          }
-          scrollToServices={() =>
-            scrollToComponent(servicesRef, setSideButton, true, navigate)
-          }
+          // scrollToAbout={() => scrollToComponent(aboutRef, setSideButton)}
+          // scrollToServices={() => scrollToComponent(servicesRef, setSideButton)}
           handleSideButton={() => handleSideButton(setSideButton, sideButtons)}
         />
         {/* BACKGROUND LAYER */}
@@ -52,12 +94,12 @@ export default function ContactForm() {
           <div className="flex justify-center blur-3xl">
             <div
               className="
-              rounded-full
-              w-28 h-16
-              sm:w-32 sm:h-20
-              md:w-40 md:h-24
-              lg:w-44 lg:h-28
-            "
+                rounded-full
+                w-28 h-16
+                sm:w-32 sm:h-20
+                md:w-40 md:h-24
+                lg:w-44 lg:h-28
+                "
               style={{
                 background:
                   "radial-gradient(circle, rgba(20,184,166,0.5) 20%, rgba(20,184,166,0.35) 45%, transparent 70%)",
@@ -102,7 +144,7 @@ export default function ContactForm() {
                       h-[1px]
                       w-1/2
                       bg-[#95d843]
-                    "
+                      "
                   />
                 </span>
               </p>
@@ -113,7 +155,7 @@ export default function ContactForm() {
             <div className="grid md:grid-cols-2 gap-12 mb-20">
               {/* Left Column */}
               <div>
-                <div className="space-y-4 mb-12">
+                <div className="animate-fade-up space-y-4 mb-12">
                   <div className="flex items-center gap-3">
                     <span className="text-lime-400 mt-1">
                       <LuAsterisk className="size-6" />
@@ -155,152 +197,71 @@ export default function ContactForm() {
               </div>
 
               {/* Right Column - Form */}
-              <div className="bg-gray-900/30 border border-gray-800 rounded-lg p-8">
-                <div className="space-y-6">
-                  <div>
-                    <label className="block text-gray-400 text-sm mb-2">
-                      Name
-                    </label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      placeholder="Your Name"
-                      className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-lime-400 transition"
-                    />
-                  </div>
+              <div className="bg-black rounded-lg">
+                {/* <div className="absolute size-40 bg-gradient-to-b from-[#0E222B] to-transparent blur-2xl"></div> */}
+                <div className="p-8">
+                  <div className="space-y-6">
+                    <div>
+                      <label className="block text-gray-400 text-sm mb-2">
+                        Name
+                      </label>
+                      <input
+                        type="text"
+                        name="Name"
+                        value={formData.Name}
+                        onChange={handleChange}
+                        placeholder="Your Name"
+                        className="w-full bg-gradient-to-r from-[#18252B] to-[#121214] rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-lime-400 focus:border transition"
+                      />
+                    </div>
 
-                  <div>
-                    <label className="block text-gray-400 text-sm mb-2">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      placeholder="namexyz@gmail.com"
-                      className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-lime-400 transition"
-                    />
-                  </div>
+                    <div>
+                      <label className="block text-gray-400 text-sm mb-2">
+                        Email
+                      </label>
+                      <input
+                        type="email"
+                        name="Email"
+                        value={formData.Email}
+                        onChange={handleChange}
+                        placeholder="namexyz@gmail.com"
+                        className="w-full bg-black/95 bg-gradient-to-r from-[#18252B] to-[#121214] rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-lime-400 focus:border transition"
+                      />
+                      {!emailValidation && (
+                        <p className="text-red-500 text-sm mt-1">
+                          Please enter a valid email address.
+                        </p>
+                      )}
+                    </div>
 
-                  <div>
-                    <label className="block text-gray-400 text-sm mb-2">
-                      Message
-                    </label>
-                    <textarea
-                      name="message"
-                      value={formData.message}
-                      onChange={handleChange}
-                      placeholder="Write here..."
-                      rows="5"
-                      className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-lime-400 transition resize-none"
-                    />
-                  </div>
+                    <div>
+                      <label className="block text-gray-400 text-sm mb-2">
+                        Message
+                      </label>
+                      <textarea
+                        name="Message"
+                        value={formData.Message}
+                        onChange={handleChange}
+                        placeholder="Write here..."
+                        rows="5"
+                        className="w-full bg-black/95 bg-gradient-to-r from-[#18252B] to-[#121214] rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-lime-400 focus:border transition resize-none"
+                      />
+                    </div>
 
-                  <button
-                    onClick={handleSubmit}
-                    className="w-full bg-lime-400 hover:bg-lime-500 text-black font-semibold py-3 rounded-lg transition duration-200"
-                  >
-                    Submit
-                  </button>
+                    <button
+                      onClick={handleSubmit}
+                      className="w-full bg-lime-400 hover:bg-lime-500 text-black font-semibold py-3 rounded-lg transition duration-200"
+                    >
+                      Submit
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Footer */}
-          <footer className="border-t border-gray-800">
-            <div className="max-w-7xl mx-auto px-6 py-8">
-              {/* Top Footer */}
-              <div className="flex flex-wrap items-center justify-between gap-8 mb-8">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 bg-gradient-to-br from-red-500 to-orange-500 rounded flex items-center justify-center">
-                    <span className="text-white font-bold text-sm">A</span>
-                  </div>
-                  <span className="text-xl font-semibold">Musab</span>
-                </div>
-
-                <nav className="flex flex-wrap gap-8 text-sm">
-                  <a
-                    href="#work"
-                    className="text-gray-400 hover:text-white transition"
-                  >
-                    Work
-                  </a>
-                  <a
-                    href="#process"
-                    className="text-gray-400 hover:text-white transition"
-                  >
-                    Process
-                  </a>
-                  <a
-                    href="#testimonial"
-                    className="text-gray-400 hover:text-white transition"
-                  >
-                    Testimonial
-                  </a>
-                  <a
-                    href="#faq"
-                    className="text-gray-400 hover:text-white transition"
-                  >
-                    FAQ
-                  </a>
-                </nav>
-
-                <a
-                  href="mailto:muhammadmusab2077@gmail.com"
-                  className="text-blue-400 hover:underline"
-                >
-                  muhammadmusab2077@gmail.com
-                </a>
-              </div>
-
-              {/* Bottom Footer */}
-              <div className="flex flex-wrap items-center justify-between gap-8 pt-8 border-t border-gray-800">
-                <div className="flex flex-wrap gap-6">
-                  <a
-                    href="#linkedin"
-                    className="flex items-center gap-2 text-gray-400 hover:text-white transition"
-                  >
-                    <FaLinkedinIn className="w-4 h-4" />
-                    <span className="text-sm">Linkedin</span>
-                  </a>
-                  <a
-                    href="#instagram"
-                    className="flex items-center gap-2 text-gray-400 hover:text-white transition"
-                  >
-                    <FaInstagram className="w-4 h-4" />
-                    <span className="text-sm">Instagram</span>
-                  </a>
-                  <a
-                    href="#behance"
-                    className="flex items-center gap-2 text-gray-400 hover:text-white transition"
-                  >
-                    <span className="text-sm">Behance</span>
-                  </a>
-                  <a
-                    href="#twitter"
-                    className="flex items-center gap-2 text-gray-400 hover:text-white transition"
-                  >
-                    <span className="text-sm">Twitter / X</span>
-                  </a>
-                  <a
-                    href="#youtube"
-                    className="flex items-center gap-2 text-gray-400 hover:text-white transition"
-                  >
-                    <BsYoutube className="w-4 h-4" />
-                    <span className="text-sm">Youtube</span>
-                  </a>
-                </div>
-
-                <div className="flex items-center gap-8 text-sm text-gray-400">
-                  <span>© 2025 — Copyright to Muhammad Musab</span>
-                </div>
-              </div>
-            </div>
-          </footer>
+          <Footer />
         </div>
       </div>
     </>
