@@ -1,6 +1,7 @@
+import { memo } from "react";
 import CommonHeader from "./CommonHeader";
 
-const testimonials = [
+const TESTIMONIALS = [
   {
     name: "Sarah Mitchell",
     role: "Product Manager",
@@ -28,37 +29,76 @@ const testimonials = [
   },
 ];
 
-export default function Testimonials() {
+// Duplicated for infinite scroll visual effect
+const ALL_TESTIMONIALS = [...TESTIMONIALS, ...TESTIMONIALS];
+
+const TestimonialCard = memo(({ item }) => (
+  <figure
+    className="min-w-[320px] max-w-[320px] bg-zinc-900 text-white p-6 rounded-2xl shadow-lg"
+    itemScope
+    itemType="https://schema.org/Review"
+  >
+    <blockquote className="text-sm text-zinc-300 mb-4" itemProp="reviewBody">
+      "{item.text}"
+    </blockquote>
+    <figcaption>
+      <span className="font-semibold block" itemProp="author">
+        {item.name}
+      </span>
+      <span className="text-xs text-zinc-400" itemProp="description">
+        {item.role}
+      </span>
+    </figcaption>
+  </figure>
+));
+TestimonialCard.displayName = "TestimonialCard";
+
+const Testimonials = () => {
   return (
-    <div className="relative overflow-hidden w-full py-16 bg-black">
-      {/* ───────── HEADER ───────── */}
+    <section
+      className="relative overflow-hidden w-full py-16 bg-black"
+      aria-labelledby="testimonials-heading"
+      itemScope
+      itemType="https://schema.org/ItemList"
+    >
       <CommonHeader
+        id="testimonials-heading"
         title="Testimonials"
         question="What Clients Say"
         answer="Feedback from those I've worked with"
-        designTweek={"from-emerald-500/20 via-emerald-500/10"}
+        designTweek="from-emerald-500/20 via-emerald-500/10"
       />
 
-      {/* ───────── SCROLLING CARDS ───────── */}
-      <div className="relative z-10 flex gap-6 md:animate-scrollLg animate-scrollSm pt-8">
-        {[...testimonials, ...testimonials].map((item, index) => (
-          <div
-            key={index}
-            className="min-w-[320px] max-w-[320px] bg-zinc-900 text-white p-6 rounded-2xl shadow-lg"
-          >
-            <p className="text-sm text-zinc-300 mb-4">“{item.text}”</p>
-            <h3 className="font-semibold">{item.name}</h3>
-            <span className="text-xs text-zinc-400">{item.role}</span>
-          </div>
+      {/* Scrolling strip — aria-hidden since content is duplicated */}
+      <div
+        className="relative z-10 flex gap-6 md:animate-scrollLg animate-scrollSm pt-8"
+        aria-hidden="true"
+      >
+        {ALL_TESTIMONIALS.map((item, index) => (
+          <TestimonialCard key={index} item={item} />
         ))}
       </div>
 
-      {/* ───────── LEFT + RIGHT VIGNETTE (FIXED) ───────── */}
-      <div className="pointer-events-none absolute inset-0 z-30 flex">
+      {/* Accessible static version for screen readers & crawlers */}
+      <ul className="sr-only" aria-label="Client testimonials list">
+        {TESTIMONIALS.map((item) => (
+          <li key={item.name}>
+            <strong>{item.name}</strong>, {item.role}: {item.text}
+          </li>
+        ))}
+      </ul>
+
+      {/* Edge fade vignette */}
+      <div
+        className="pointer-events-none absolute inset-0 z-30 flex"
+        aria-hidden="true"
+      >
         <div className="w-24 md:w-64 h-full bg-gradient-to-r from-black to-transparent" />
         <div className="flex-1" />
         <div className="w-24 md:w-64 h-full bg-gradient-to-l from-black to-transparent" />
       </div>
-    </div>
+    </section>
   );
-}
+};
+
+export default memo(Testimonials);

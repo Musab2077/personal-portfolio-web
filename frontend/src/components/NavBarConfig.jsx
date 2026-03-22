@@ -1,24 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import NavBar, { DesktopIcon, MobileIcon } from "./NavBar";
 import AOS from "aos";
 import "aos/dist/aos.css";
+
+const BREAKPOINT = 845;
 
 const NavBarConfig = ({
   scrollToAbout,
   scrollToServices,
   handleSideButton,
 }) => {
-  const [smallDevices, setSmallDevices] = useState(window.innerWidth > 845);
+  const [isDesktop, setIsDesktop] = useState(
+    () => window.innerWidth > BREAKPOINT,
+  );
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const handleResize = () => {
-      setSmallDevices(window.innerWidth > 845);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   useEffect(() => {
     AOS.init({
@@ -29,30 +25,52 @@ const NavBarConfig = ({
     });
   }, []);
 
+  useEffect(() => {
+    let rafId;
+    const handleResize = () => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        setIsDesktop(window.innerWidth > BREAKPOINT);
+      });
+    };
+    window.addEventListener("resize", handleResize, { passive: true });
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const handleGetInTouch = useCallback(() => navigate("/contact"), [navigate]);
+
   return (
     <NavBar
-      stretcOnSmDevice={smallDevices}
+      stretcOnSmDevice={isDesktop}
       getInTouch={
-        smallDevices && (
+        isDesktop && (
           <button
-            className="text-black rounded-lg p-2 px-4 bg-[#8CFF00]"
-            onClick={() => navigate("/contact")}
+            className="text-black rounded-lg p-2 px-4 bg-[#8CFF00] hover:shadow-[0_4px_16px_#8CFF00] transition-shadow"
+            onClick={handleGetInTouch}
+            aria-label="Navigate to contact page"
           >
             Get in Touch
           </button>
         )
       }
     >
-      {smallDevices ? (
+      {isDesktop ? (
         <DesktopIcon
           aboutClick={scrollToAbout}
           servicesClick={scrollToServices}
         />
       ) : (
-        <MobileIcon onClick={handleSideButton} />
+        <MobileIcon
+          onClick={handleSideButton}
+          aria-label="Open navigation menu"
+          aria-expanded={false}
+        />
       )}
     </NavBar>
   );
 };
 
-export default NavBarConfig;
+export default memo(NavBarConfig);
